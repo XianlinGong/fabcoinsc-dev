@@ -63,11 +63,11 @@
     </message>
     <message>
         <source>These are your Fabcoin addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>אלה הם כתובות הקטום שלך לשליחת תשלומים. חשוב לבדוק את הכמות של הכתובות המקבלות לפני שליחת מטבעות</translation>
+        <translation>אלו הן כתובות הביטקוין שלך לשליחת תשלומים. חשוב לבדוק את כמות הכתובות המקבלות לפני שליחת מטבעות.</translation>
     </message>
     <message>
         <source>These are your Fabcoin addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>אלה הן כתובות הקטום שלך לקבלת תשלומים. מומלץ להשתמש בכתובת חדשה לכל העברה.</translation>
+        <translation>אלו הן כתובות הביטקוין שלך לקבלת תשלומים. מומלץ להשתמש בכתובת חדשה לכל העברה.</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -181,7 +181,7 @@
     </message>
     <message>
         <source>%1 will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your fabcoins from being stolen by malware infecting your computer.</source>
-        <translation>%1 ייסגר כעת כדי לסיים את תהליך ההצפנה. נא לשים לב כי הצפנת הארנק שלך לא יכול להגן על הביטקוינים שלך מפני גניבה או נוזקה שתוקפת את מחשבך.</translation>
+        <translation>%1ייסגר עכשיו כדי לסיים את תהליך ההצפנה. זכור כי הצפנת הארנק שלך לא יכול להגן באופן מלא על fabcoins שלך מפני שנגנב על ידי תוכנות זדוניות להדביק את המחשב.</translation>
     </message>
     <message>
         <source>IMPORTANT: Any previous backups you have made of your wallet file should be replaced with the newly generated, encrypted wallet file. For security reasons, previous backups of the unencrypted wallet file will become useless as soon as you start using the new, encrypted wallet.</source>
@@ -339,7 +339,7 @@
     </message>
     <message>
         <source>Send coins to a Fabcoin address</source>
-        <translation>שליחת מטבעות לכתובת קטום</translation>
+        <translation>שליחת מטבעות לכתובת ביטקוין</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -363,7 +363,7 @@
     </message>
     <message>
         <source>Fabcoin</source>
-        <translation>קטום</translation>
+        <translation>ביטקוין</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -391,11 +391,11 @@
     </message>
     <message>
         <source>Sign messages with your Fabcoin addresses to prove you own them</source>
-        <translation>חתום על הודעות עם כתובות הקטום שלך כדי להוכיח שהן בבעלותך</translation>
+        <translation>חתום על הודעות עם כתובות הביטקוין שלך כדי להוכיח שהן בבעלותך</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified Fabcoin addresses</source>
-        <translation>אמת הודעות כדי להבטיח שהן נחתמו עם כתובת קטום מסוימות</translation>
+        <translation>אמת הודעות כדי להבטיח שהן נחתמו עם כתובת ביטקוין מסוימות</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -427,7 +427,7 @@
     </message>
     <message>
         <source>Open a fabcoin: URI or payment request</source>
-        <translation>פתיחת קטום: כתובת משאב או בקשת תשלום</translation>
+        <translation>פתיחת fabcoin: URI או בקשת תשלום</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -435,7 +435,7 @@
     </message>
     <message numerus="yes">
         <source>%n active connection(s) to Fabcoin network</source>
-        <translation><numerusform>חיבור אחד פעיל לרשת קטום</numerusform><numerusform>%n חיבורים פעילים לרשת קטום</numerusform></translation>
+        <translation><numerusform>חיבור אחד פעיל לרשת ביטקוין</numerusform><numerusform>%n חיבורים פעילים לרשת ביטקוין</numerusform></translation>
     </message>
     <message>
         <source>Processing blocks on disk...</source>
@@ -471,7 +471,7 @@
     </message>
     <message>
         <source>Show the %1 help message to get a list with possible Fabcoin command-line options</source>
-        <translation>יש להציג את הודעת העזרה של %1 כדי להציג רשימה עם אפשרויות שורת פקודה לקטום</translation>
+        <translation>יש להציג את הודעת העזרה של %1 כדי להציג רשימה עם אפשרויות שורת פקודה לביטקוין</translation>
     </message>
     <message>
         <source>%1 client</source>
@@ -533,7 +533,7 @@
     </message>
     <message>
         <source>A fatal error occurred. Fabcoin can no longer continue safely and will quit.</source>
-        <translation>אירעה שגיאה חמורה. אין אפשרות להשתמש עוד בקטום באופן מאובטח והיישום ייסגר.</translation>
+        <translation>אירעה שגיאה חמורה. אין אפשרות להשתמש עוד בביטקוין באופן מאובטח והיישום ייסגר.</translation>
     </message>
 </context>
 <context>
@@ -667,7 +667,7 @@
         <translation>תווית זו הופכת לאדומה אם מישהו מהנמענים מקבל סכום נמוך יותר מסף האבק הנוכחי.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
+        <source>Can vary +/- %1 liu(s) per input.</source>
         <translation>יכול להשתנות במגמה של +/- %1 סנטושי לקלט.</translation>
     </message>
     <message>
@@ -715,7 +715,7 @@
     </message>
     <message>
         <source>The entered address "%1" is not a valid Fabcoin address.</source>
-        <translation>הכתובת שהוקלדה „%1” היא אינה כתובת קטום תקנית.</translation>
+        <translation>הכתובת שהוקלדה „%1” היא אינה כתובת ביטקוין תקנית.</translation>
     </message>
     <message>
         <source>The entered address "%1" is already in the address book.</source>
@@ -997,7 +997,7 @@
     </message>
     <message>
         <source>Automatically open the Fabcoin client port on the router. This only works when your router supports UPnP and it is enabled.</source>
-        <translation>פתיחת הפתחה של קטום בנתב באופן אוטומטי. עובד רק אם UPnP מופעל ונתמך בנתב.</translation>
+        <translation>פתיחת הפתחה של ביטקוין בנתב באופן אוטומטי. עובד רק אם UPnP מופעל ונתמך בנתב.</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>
@@ -1005,7 +1005,7 @@
     </message>
     <message>
         <source>Connect to the Fabcoin network through a SOCKS5 proxy.</source>
-        <translation>התחבר לרשת הקטום דרך פרוקסי SOCKS5.</translation>
+        <translation>התחבר לרשת הביטקוין דרך פרוקסי SOCKS5.</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -1124,7 +1124,7 @@
     </message>
     <message>
         <source>The displayed information may be out of date. Your wallet automatically synchronizes with the Fabcoin network after a connection is established, but this process has not completed yet.</source>
-        <translation>המידע המוצג עשוי להיות מיושן. הארנק שלך מסתנכרן באופן אוטומטי עם רשת הקטום לאחר יצירת החיבור, אך התהליך טרם הסתיים.</translation>
+        <translation>המידע המוצג עשוי להיות מיושן. הארנק שלך מסתנכרן באופן אוטומטי עם רשת הביטקוין לאחר יצירת החיבור, אך התהליך טרם הסתיים.</translation>
     </message>
     <message>
         <source>Watch-only:</source>
@@ -1273,7 +1273,7 @@
     </message>
     <message>
         <source>Enter a Fabcoin address (e.g. %1)</source>
-        <translation>נא להזין כתובת קטום (למשל: %1)</translation>
+        <translation>נא להזין כתובת ביטקוין (למשל: %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1673,7 +1673,7 @@
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Fabcoin network.</source>
-        <translation>הודעת רשות לצירוף לבקשת התשלום שתוצג בעת פתיחת הבקשה. לתשומת לבך: ההודעה לא תישלח עם התשלום ברשת קטום.</translation>
+        <translation>הודעת רשות לצירוף לבקשת התשלום שתוצג בעת פתיחת הבקשה. לתשומת לבך: ההודעה לא תישלח עם התשלום ברשת ביטקוין.</translation>
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
@@ -2073,7 +2073,7 @@
     </message>
     <message>
         <source>The Fabcoin address to send the payment to</source>
-        <translation>כתובת הקטום של המוטב</translation>
+        <translation>כתובת הביטקוין של המוטב</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -2113,7 +2113,7 @@
     </message>
     <message>
         <source>A message that was attached to the fabcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Fabcoin network.</source>
-        <translation>הודעה שצורפה לקטום: כתובת שתאוחסן בהעברה לצורך מעקב מצדך. לתשומת לבך: הודעה זו לא תישלח ברשת הקטום.</translation>
+        <translation>הודעה שצורפה לביטקוין: כתובת שתאוחסן בהעברה לצורך מעקב מצדך. לתשומת לבך: הודעה זו לא תישלח ברשת הביטקוין.</translation>
     </message>
     <message>
         <source>Pay To:</source>
@@ -2154,7 +2154,7 @@
     </message>
     <message>
         <source>The Fabcoin address to sign the message with</source>
-        <translation>כתובת הקטום אתה לחתום אתה את ההודעה</translation>
+        <translation>כתובת הביטקוין אתה לחתום אתה את ההודעה</translation>
     </message>
     <message>
         <source>Choose previously used address</source>
@@ -2186,7 +2186,7 @@
     </message>
     <message>
         <source>Sign the message to prove you own this Fabcoin address</source>
-        <translation>ניתן לחתום על ההודעה כדי להוכיח שכתובת הקטום הזו בבעלותך.</translation>
+        <translation>ניתן לחתום על ההודעה כדי להוכיח שכתובת הביטקוין הזו בבעלותך.</translation>
     </message>
     <message>
         <source>Sign &amp;Message</source>
@@ -2206,11 +2206,11 @@
     </message>
     <message>
         <source>The Fabcoin address the message was signed with</source>
-        <translation>כתובת הקטום שאתה נחתמה ההודעה</translation>
+        <translation>כתובת הביטקוין שאתה נחתמה ההודעה</translation>
     </message>
     <message>
         <source>Verify the message to ensure it was signed with the specified Fabcoin address</source>
-        <translation>ניתן לאמת את ההודעה כדי להבטיח שהיא נחתמה עם כתובת הקטום הנתונה</translation>
+        <translation>ניתן לאמת את ההודעה כדי להבטיח שהיא נחתמה עם כתובת הביטקוין הנתונה</translation>
     </message>
     <message>
         <source>Verify &amp;Message</source>
@@ -2715,7 +2715,7 @@
     </message>
     <message>
         <source>Fabcoin Core</source>
-        <translation>ליבת קטום</translation>
+        <translation>ליבת ביטקוין</translation>
     </message>
     <message>
         <source>The %s developers</source>

@@ -169,7 +169,7 @@
     </message>
     <message>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR FABCOINS&lt;/b&gt;!</source>
-        <translation>Uyarı: Eğer cüzdanınızı şifreler ve parolanızı kaybederseniz &lt;b&gt;TÜM FABCOINLERİNİZİ KAYBEDECEKSİNİZ&lt;/b&gt;!</translation>
+        <translation>Uyarı: Eğer cüzdanınızı şifreler ve parolanızı kaybederseniz &lt;b&gt;TÜM BİTCOİNLERİNİZİ KAYBEDECEKSİNİZ&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -687,8 +687,8 @@
         <translation>Eğer herhangi bir alıcı mevcut toz eşiğinden daha düşük bir tutar alırsa bu etiket kırmızıya dönüşür.</translation>
     </message>
     <message>
-        <source>Can vary +/- %1 satoshi(s) per input.</source>
-        <translation>Girdi başına +/- %1 satoshi değişebilir.</translation>
+        <source>Can vary +/- %1 liu(s) per input.</source>
+        <translation>Girdi başına +/- %1 liu değişebilir.</translation>
     </message>
     <message>
         <source>(no label)</source>
@@ -2025,7 +2025,7 @@
         <translation>kilobayt başı</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 satoshis and the transaction is only 250 bytes, then "per kilobyte" only pays 250 satoshis in fee, while "total at least" pays 1000 satoshis. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <source>If the custom fee is set to 1000 lius and the transaction is only 250 bytes, then "per kilobyte" only pays 250 lius in fee, while "total at least" pays 1000 lius. For transactions bigger than a kilobyte both pay by kilobyte.</source>
         <translation>Eğer özel ücret 1000 satoşi olarak ayarlandıysa ve işlem sadece 250 baytsa, "kilobayt başı" ücret olarak sadece 250 satoşi öder ve "toplam asgari" 1000 satoşi öder. Bir kilobayttan yüksek işlemler için ikisi de kilobayt başı ödeme yapar.</translation>
     </message>
     <message>
