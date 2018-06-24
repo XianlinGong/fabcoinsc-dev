@@ -1,7 +1,6 @@
 *.tar.gz
 
 *.exe
-src/fabcoin
 src/fabcoind
 src/fabcoin-cli
 src/fabcoin-tx
