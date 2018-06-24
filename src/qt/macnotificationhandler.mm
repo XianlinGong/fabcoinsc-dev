@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.fabcoin.fabcoin-qt";
+        return @"org.fabcoinfoundation.Fabcoin-Qt";
     } else {
         return [self __bundleIdentifier];
     }

@@ -49,8 +49,8 @@ static const int MAX_URI_LENGTH = 255;
 #define SPINNER_FRAMES 36
 
 #define QAPP_ORG_NAME "Fabcoin"
-#define QAPP_ORG_DOMAIN "fabcoin.org"
-#define QAPP_APP_NAME_DEFAULT "fabcoin-qt"
-#define QAPP_APP_NAME_TESTNET "fabcoin-qt-testnet"
+#define QAPP_ORG_DOMAIN "fabcoin.pro"
+#define QAPP_APP_NAME_DEFAULT "Fabcoin-Qt"
+#define QAPP_APP_NAME_TESTNET "Fabcoin-Qt-testnet"
 
 #endif // FABCOIN_QT_GUICONSTANTS_H
