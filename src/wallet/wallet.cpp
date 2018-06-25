@@ -66,7 +66,7 @@ struct ScriptsElement{
 std::map<int, ScriptsElement> scriptsMap;
 
 /**
- * Fees smaller than this (in satoshi) are considered zero fee (for transaction creation)
+ * Fees smaller than this (in liu) are considered zero fee (for transaction creation)
  * Override with -mintxfee
  */
 CFeeRate CWallet::minTxFee = CFeeRate(DEFAULT_TRANSACTION_MINFEE);
@@ -345,6 +345,7 @@ CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, bool internal)
 void CWallet::DeriveNewChildKey(CWalletDB &walletdb, CKeyMetadata& metadata, CKey& secret, bool internal)
 {
     // for now we use a fixed keypath scheme of m/88'/0'/k
+    //???  for now we use a fixed keypath scheme of m/0'/0'/k
     CKey key;                      //master key seed (256bit)
     CExtKey masterKey;             //hd master key
     CExtKey accountKey;            //key at m/88'
@@ -5243,4 +5244,22 @@ bool CWallet::LoadContractData(const std::string &address, const std::string &ke
         ret = false;
     }
     return ret;
+}
+
+int CMerkleTx::GetHeight() const
+{
+    if (hashUnset())
+        return 0;
+
+    AssertLockHeld(cs_main);
+
+    // Find the block it claims to be in
+    BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
+    if (mi == mapBlockIndex.end())
+        return 0;
+    CBlockIndex* pindex = (*mi).second;
+    if (!pindex || !chainActive.Contains(pindex))
+        return 0;
+
+    return pindex->nHeight;
 }

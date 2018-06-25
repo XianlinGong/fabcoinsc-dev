@@ -381,6 +381,7 @@ static void AddKey(CWallet& wallet, const CKey& key)
     wallet.AddKeyPubKey(key, key.GetPubKey());
 }
 
+//??? BOOST_FIXTURE_TEST_CASE(rescan, TestChain800Setup)
 BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
 {
     LOCK(cs_main);
@@ -399,6 +400,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(nullBlock, wallet.ScanForWalletTransactions(oldTip));
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 40000 * COIN);
+//???        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 50 * COIN);
     }
 
     // Prune the older block file.
@@ -412,6 +414,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(oldTip, wallet.ScanForWalletTransactions(oldTip));
         BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 20000 * COIN);
+//???        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 25 * COIN);
     }
 
     // Verify importmulti RPC returns failure for a key whose creation time is
@@ -458,6 +461,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
 // greater or equal than key birthday. Previously there was a bug where
 // importwallet RPC would start the scan at the latest block with timestamp less
 // than or equal to key birthday.
+//??? BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain800Setup)
 BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
 {
     LOCK(cs_main);
@@ -501,9 +505,11 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
         ::importwallet(request);
 
         BOOST_CHECK_EQUAL(wallet.mapWallet.size(), 3);
+//???        BOOST_CHECK_EQUAL(coinbaseTxns.size(), 803);
         BOOST_CHECK_EQUAL(coinbaseTxns.size(), 503);
         for (size_t i = 0; i < coinbaseTxns.size(); ++i) {
             bool found = wallet.GetWalletTx(coinbaseTxns[i].GetHash());
+//???            bool expected = i >= 800;
             bool expected = i >= 500;
             BOOST_CHECK_EQUAL(found, expected);
         }
@@ -519,6 +525,7 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
 // This is a regression test written to verify a bugfix for the immature credit
 // function. Similar tests probably should be written for the other credit and
 // debit functions.
+//??? BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain800Setup)
 BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
 {
     CWallet wallet;
@@ -535,6 +542,7 @@ BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
     // credit amount is calculated.
     wtx.MarkDirty();
     wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
+//???    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 25*COIN);
     BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 20000*COIN);
 }
 
@@ -604,6 +612,7 @@ BOOST_AUTO_TEST_CASE(LoadReceiveRequests)
     BOOST_CHECK_EQUAL(values[1], "val_rr1");
 }
 
+//??? class ListCoinsTestingSetup : public TestChain800Setup
 class ListCoinsTestingSetup : public TestChain100Setup
 {
 public:
@@ -648,7 +657,7 @@ public:
 
 BOOST_FIXTURE_TEST_CASE(ListCoins, ListCoinsTestingSetup)
 {
-    return;
+    return;    // ????
 
     std::string coinbaseAddress = coinbaseKey.GetPubKey().GetID().ToString();
     LOCK2(cs_main, wallet->cs_wallet);
@@ -662,6 +671,7 @@ BOOST_FIXTURE_TEST_CASE(ListCoins, ListCoinsTestingSetup)
 
     // Check initial balance from one mature coinbase transaction.
     BOOST_CHECK_EQUAL(20000 * COIN, wallet->GetAvailableBalance());
+//???    BOOST_CHECK_EQUAL(25 * COIN, wallet->GetAvailableBalance());
 
     // Add a transaction creating a change address, and confirm ListCoins still
     // returns the coin associated with the change address underneath the
