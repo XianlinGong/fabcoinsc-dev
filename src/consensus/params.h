@@ -46,6 +46,13 @@ struct Params {
     int BIP65Height;
     /** Block height at which BIP66 becomes active */
     int BIP66Height;
+    /** Block height at which Fabcoin GPU hard fork becomes active */
+    int FABHeight;
+    /** Block height before which the coinbase subsidy will be locked for the same period */
+    int CoinbaseLock;
+    /** whether segwit is active */
+    bool ForceSegwit;
+
     /**
      * Minimum blocks including miner confirmation of the total of 2016 blocks in a retargeting period,
      * (nPowTargetTimespan / nPowTargetSpacing) which is also used for BIP9 deployments.
@@ -57,6 +64,9 @@ struct Params {
     /** Proof of work parameters */
     uint256 powLimit;
     uint256 posLimit;
+    uint256 powLimitLegacy;
+
+    const uint256& PowLimit(bool postfork) const { return postfork ? powLimit : powLimitLegacy; }
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
@@ -69,6 +79,14 @@ struct Params {
     int nFirstMPoSBlock;
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
+};
+    //Zcash logic for diff adjustment
+    int64_t nPowAveragingWindow;
+    int64_t nPowMaxAdjustDown;
+    int64_t nPowMaxAdjustUp;
+    int64_t AveragingWindowTimespan() const { return nPowAveragingWindow * nPowTargetSpacing; }
+    int64_t MinActualTimespan() const { return (AveragingWindowTimespan() * (100 - nPowMaxAdjustUp  )) / 100; }
+    int64_t MaxActualTimespan() const { return (AveragingWindowTimespan() * (100 + nPowMaxAdjustDown)) / 100; }
 };
 } // namespace Consensus
 

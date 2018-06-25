@@ -9,6 +9,7 @@
 #include "script/interpreter.h"
 #include "script/standard.h"
 #include "validation.h"
+#include "chainparams.h"
 
 // TODO remove the following dependencies
 #include "chain.h"
@@ -165,6 +166,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, bool fChe
     if (tx.vout.empty())
         return state.DoS(10, false, REJECT_INVALID, "bad-txns-vout-empty");
     // Size limits (this doesn't take the witness into account, as that hasn't been checked for malleability)
+//???    if (::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT)
     if (::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > MAX_TRANSACTION_BASE_SIZE || 
         ::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) * WITNESS_SCALE_FACTOR > dgpMaxBlockWeight)
         return state.DoS(100, false, REJECT_INVALID, "bad-txns-oversize");
@@ -236,10 +238,20 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
 
             // If prev is coinbase, check that it's matured
             if (coin.IsCoinBase() || coin.IsCoinStake()) {
+//???                const Consensus::Params& consensus = ::GetParams().GetConsensus();
                 if (nSpendHeight - coin.nHeight < COINBASE_MATURITY)
                     return state.Invalid(false,
                         REJECT_INVALID, "bad-txns-premature-spend-of-coinbase",
                         strprintf("tried to spend coinbase at depth %d", nSpendHeight - coin.nHeight));
+/* ??? !!!
+                if( coin.nHeight < consensus.CoinbaseLock && coin.nHeight  != 2 )
+                {
+                    if (nSpendHeight - coin.nHeight < consensus.CoinbaseLock)
+                        return state.Invalid(false,
+                        REJECT_INVALID, "bad-txns-premature-spend-of-coinbase",
+                        strprintf("tried to spend coinbase on height %d at depth %d", coin.nHeight, nSpendHeight - coin.nHeight));
+                }
+*/
             }
 
             // Check for negative or overflow input values
