@@ -35,6 +35,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "generatetoaddress", 2, "maxtries" },
     { "getnetworkhashps", 0, "nblocks" },
     { "getnetworkhashps", 1, "height" },
+//???     { "getblocksubsidy", 0, "height" },
     { "sendtoaddress", 1, "amount" },
     { "sendtoaddress", 4, "subtractfeefromamount" },
     { "sendtoaddress", 5 , "replaceable" },
@@ -110,7 +111,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "listunspent", 4, "query_options" },
     { "getblock", 1, "verbosity" },
     { "getblock", 1, "verbose" },
+//???     { "getblock", 2, "legacy" },
     { "getblockheader", 1, "verbose" },
+//???    { "getblockheader", 2, "legacy" },
     { "getchaintxstats", 0, "nblocks" },
     { "gettransaction", 1, "include_watchonly" },
     { "gettransaction", 2, "waitconf" },
@@ -181,6 +184,9 @@ static const CRPCConvertParam vRPCConvertParams[] =
     { "echojson", 7, "arg7" },
     { "echojson", 8, "arg8" },
     { "echojson", 9, "arg9" },
+    { "setgenerate", 0, "generate"},
+    { "setgenerate", 1, "genproclimit" },
+    { "getgenerate", 0, "generate"},
 };
 
 class CRPCConvertTable
