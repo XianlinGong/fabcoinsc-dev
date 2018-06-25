@@ -1286,6 +1286,7 @@ UniValue setgenerate(const JSONRPCRequest& request)
             fGenerate = false;
     }
 
+/* ???
     gArgs.ForceSetArg("-gen",fGenerate ? "1" : "0");
     gArgs.ForceSetArg("-genproclimit",itostr(nGenProcLimit));
     GenerateFabcoins(fGenerate, nGenProcLimit, Params());
@@ -1296,6 +1297,7 @@ UniValue setgenerate(const JSONRPCRequest& request)
     conf.allGPU = gArgs.GetBoolArg("-allgpu", 0);
     conf.forceGenProcLimit = gArgs.GetBoolArg("-forcenolimit", false);
     GenerateFabcoins(fGenerate, nGenProcLimit, Params(), conf);
+*/
 
     return 0;
 }
