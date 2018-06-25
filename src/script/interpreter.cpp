@@ -13,6 +13,7 @@
 #include "script/script.h"
 #include "uint256.h"
 
+typedef std::vector<unsigned char> valtype;
 
 namespace {
 
@@ -60,7 +61,7 @@ static inline void popstack(std::vector<valtype>& stack)
     stack.pop_back();
 }
 
-bool IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
+bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
     if (vchPubKey.size() < 33) {
         //  Non-canonical public key: too short
         return false;
@@ -169,7 +170,7 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig, bool
     return true;
 }
 
-bool IsLowDERSignature(const valtype &vchSig, ScriptError* serror, bool haveHashType) {
+bool static IsLowDERSignature(const valtype &vchSig, ScriptError* serror, bool haveHashType) {
     if (!IsValidSignatureEncoding(vchSig, haveHashType)) {
         return set_error(serror, SCRIPT_ERR_SIG_DER);
     }
