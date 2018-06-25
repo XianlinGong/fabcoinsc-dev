@@ -7,6 +7,7 @@
 #define FABCOIN_MINER_H
 
 #include "primitives/block.h"
+//??? #include "libgpusolver/gpuconfig.h"
 #include "txmempool.h"
 
 #include <stdint.h>
@@ -21,6 +22,9 @@ class CChainParams;
 class CScript;
 
 namespace Consensus { struct Params; };
+
+static const bool DEFAULT_GENERATE = false;
+static const int DEFAULT_GENERATE_THREADS = 1;
 
 static const bool DEFAULT_PRINTPRIORITY = false;
 
@@ -233,6 +237,8 @@ public:
     BlockAssembler(const CChainParams& params);
     BlockAssembler(const CChainParams& params, const Options& options);
 
+    /**  Construct a new block template with coinbase to scriptPubKeyIn */
+    //??? std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true);
 ///////////////////////////////////////////// // fabcoin
     ByteCodeExecResult bceResult;
     uint64_t minGasPrice = 1;
@@ -292,6 +298,14 @@ private:
 /** Generate a new block, without valid proof-of-work */
 void StakeFabcoins(bool fStake, CWallet *pwallet);
 
+
+/** ??? Run the miner threads 
+void GenerateFabcoins(bool fGenerate, int nThreads, const CChainParams& chainparams);
+void GenerateFabcoins(bool fGenerate, int nThreads, const CChainParams& chainparams, GPUConfig conf);
+void Scan_nNonce_nSolution(CBlock *pblock, unsigned int n, unsigned int k);
+void creategenesisblock ( uint32_t nTime, uint32_t nBits );
+
+*/
 /** Modify the extranonce in a block */
 void IncrementExtraNonce(CBlock* pblock, const CBlockIndex* pindexPrev, unsigned int& nExtraNonce);
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev);
