@@ -1111,7 +1111,8 @@ void static ProcessGetData(CNode* pfrom, const Consensus::Params& consensusParam
                         pblock = pblockRead;
                     }
 /* ???                    int legacy_block_flag = (pfrom->IsLegacyBlockHeader(pfrom->GetSendVersion())
-*/                                                 ? SERIALIZE_BLOCK_LEGACY : 0);
+                                                 ? SERIALIZE_BLOCK_LEGACY : 0);
+*/
                     if (inv.type == MSG_BLOCK)
                         connman->PushMessage(pfrom, msgMaker.Make(SERIALIZE_TRANSACTION_NO_WITNESS, NetMsgType::BLOCK, *pblock));
 // ???                        connman->PushMessage(pfrom, msgMaker.Make(legacy_block_flag | SERIALIZE_TRANSACTION_NO_WITNESS,
