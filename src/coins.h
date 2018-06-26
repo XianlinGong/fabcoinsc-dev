@@ -38,6 +38,7 @@ public:
 	
     //! at which height this containing transaction was included in the active block chain
     uint32_t nHeight : 30;
+//???    uint32_t nHeight : 31;
 
     //! construct a Coin from a CTxOut and height/coinbase information.
     Coin(CTxOut&& outIn, int nHeightIn, bool fCoinBaseIn, bool fCoinStakeIn) : out(std::move(outIn)), fCoinBase(fCoinBaseIn), fCoinStake(fCoinStakeIn), nHeight(nHeightIn) {}
@@ -64,6 +65,7 @@ public:
     void Serialize(Stream &s) const {
         assert(!IsSpent());
         uint32_t code = (nHeight << 2) + (fCoinBase ? 1 : 0) + (fCoinStake ? 2 : 0);
+//???        uint32_t code = nHeight * 2 + fCoinBase;
         ::Serialize(s, VARINT(code));
         ::Serialize(s, CTxOutCompressor(REF(out)));
     }
@@ -73,6 +75,7 @@ public:
         uint32_t code = 0;
         ::Unserialize(s, VARINT(code));
         nHeight = code >> 2;
+//???        nHeight = code >> 1;
         fCoinBase = code & 1;
         fCoinStake = (code >> 1) & 1;
         ::Unserialize(s, REF(CTxOutCompressor(out)));

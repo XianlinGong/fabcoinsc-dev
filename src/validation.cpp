@@ -115,6 +115,7 @@ static bool UpdateHashProof(const CBlock& block, CValidationState& state, const 
 CScript COINBASE_FLAGS;
 
 const std::string strMessageMagic = "Qtum Signed Message:\n";
+//??????????????????  const std::string strMessageMagic = "Bitcoin Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -393,6 +394,23 @@ static bool IsCurrentForFeeEstimation()
     if (chainActive.Height() < pindexBestHeader->nHeight - 1)
         return false;
     return true;
+}
+
+bool static IsFABHardForkEnabled(int nHeight, const Consensus::Params& params) {
+    return nHeight >= params.FABHeight;
+}
+
+bool IsFABHardForkEnabled(const CBlockIndex* pindexPrev, const Consensus::Params& params) {
+    if (pindexPrev == nullptr) {
+        return false;
+    }
+
+    return IsFABHardForkEnabled(pindexPrev->nHeight, params);
+}
+
+bool IsFABHardForkEnabledForCurrentBlock(const Consensus::Params& params) {
+    AssertLockHeld(cs_main);
+    return IsFABHardForkEnabled(chainActive.Tip(), params);
 }
 
 /* Make mempool consistent after a reorg, by re-adding or recursively erasing
@@ -1179,6 +1197,7 @@ static bool WriteBlockToDisk(const CBlock& block, CDiskBlockPos& pos, const CMes
     return true;
 }
 
+//??? bool ReadBlockFromDisk(CBlock& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
 template <typename Block>
 bool ReadBlockFromDisk(Block& block, const CDiskBlockPos& pos, const Consensus::Params& consensusParams)
 {
@@ -1197,7 +1216,16 @@ bool ReadBlockFromDisk(Block& block, const CDiskBlockPos& pos, const Consensus::
         return error("%s: Deserialize or I/O error - %s at %s", __func__, e.what(), pos.ToString());
     }
 
+/* ????
+    // Check Equihash solution
+    bool postfork = block.nHeight >= (uint32_t)consensusParams.FABHeight;
+    if (postfork && !CheckEquihashSolution(&block, Params())) {
+        return error("ReadBlockFromDisk: Errors in block header at %s (bad Equihash solution)", pos.ToString());
+    }
     // Check the header
+    if (!CheckProofOfWork(block.GetHash(), block.nBits, postfork, consensusParams))
+        return error("ReadBlockFromDisk: Errors in block header at %s", pos.ToString());
+*/
     if(!block.IsProofOfStake()) {
         //PoS blocks can be loaded out of order from disk, which makes PoS impossible to validate. So, do not validate their headers
         //they will be validated later in CheckBlock and ConnectBlock anyway
@@ -1272,6 +1300,28 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     nSubsidy >>= halvings;
     return nSubsidy;
 }
+/*????
+CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
+{
+    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
+    // Force block reward to zero when right shift is undefined.
+    if (halvings >= 64)
+        return 0;
+
+    CAmount nSubsidy = 25 * COIN;
+
+    //Pre-mining 
+    bool fRegTest = gArgs.GetBoolArg("-regtest", false);
+
+    if ( nHeight == 2  &&  !fRegTest ) {
+       nSubsidy = 32000000 * COIN;
+    }
+
+    // Subsidy is cut in half every 1680,000 blocks which will occur approximately every 4 years.
+    nSubsidy >>= halvings;
+    return nSubsidy;
+}
+*/
 
 bool IsInitialBlockDownload()
 {
@@ -3914,6 +3964,22 @@ static bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state,
     // PoS header proofs are not validated and always return true
     return true;
 }
+/*????
+static bool _CheckBlockHeader(const CBlockHeader& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW = true)
+{
+    // Check Equihash solution is valid
+    bool postfork = block.nHeight >= (uint32_t)consensusParams.FABHeight;
+    if (fCheckPOW && postfork && !CheckEquihashSolution(&block, Params())) {
+        LogPrintf("CheckBlockHeader(): Equihash solution invalid at height %d\n", block.nHeight);
+        return state.DoS(100, error("CheckBlockHeader(): Equihash solution invalid"),
+                         REJECT_INVALID, "invalid-solution");
+    }
+    // Check proof of work matches claimed amount
+    if (fCheckPOW && !CheckProofOfWork(block.GetHash(), block.nBits, postfork, consensusParams))
+        return state.DoS(50, false, REJECT_INVALID, "high-hash", false, "proof of work failed");
+    return true;
+}
+*/
 
 bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig)
 {
@@ -3950,6 +4016,15 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     // Note that witness malleability is checked in ContextualCheckBlock, so no
     // checks that use witness data may be performed here.
 
+/*???
+    // Size limits
+    int serialization_flags = SERIALIZE_TRANSACTION_NO_WITNESS;
+    if (block.nHeight < (uint32_t)consensusParams.FABHeight) {
+        serialization_flags |= SERIALIZE_BLOCK_LEGACY;
+    }
+    if (block.vtx.empty() || block.vtx.size() * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT || ::GetSerializeSize(block, SER_NETWORK, PROTOCOL_VERSION | serialization_flags) * WITNESS_SCALE_FACTOR > MAX_BLOCK_WEIGHT)
+        return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
+*/
     // First transaction must be coinbase in case of PoW block, the rest must not be
     if (block.vtx.empty() || !block.vtx[0]->IsCoinBase())
         return state.DoS(100, false, REJECT_INVALID, "bad-cb-missing", false, "first tx is not coinbase");
@@ -4108,6 +4183,10 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
             return state.DoS(100, error("%s: forked chain older than last checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-checkpoint");
     }
 
+/* ???   // Check block height for blocks after FAB fork.
+    if (nHeight >= consensusParams.FABHeight && block.nHeight != (uint32_t)nHeight)
+        return state.Invalid(false, REJECT_INVALID, "bad-height", "incorrect block height");
+*/
     // Check timestamp against prev
     if (pindexPrev && block.IsProofOfStake() && block.GetBlockTime() <= pindexPrev->GetMedianTimePast())
         return state.Invalid(false, REJECT_INVALID, "time-too-old", "block's timestamp is too early");
@@ -4168,6 +4247,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
     //   multiple, the last one is used.
     bool fHaveWitness = false;
     if (VersionBitsState(pindexPrev, consensusParams, Consensus::DEPLOYMENT_SEGWIT, versionbitscache) == THRESHOLD_ACTIVE) {
+//???    if ( IsWitnessEnabled(pindexPrev, consensusParams) ) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
             bool malleated = false;
@@ -4195,6 +4275,17 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
         }
     }
 
+/*???
+    // After the coinbase witness nonce and commitment are verified,
+    // we can check if the block weight passes (before we've checked the
+    // coinbase witness, it would be possible for the weight to be too
+    // large by filling up the coinbase witness, which doesn't change
+    // the block hash, so we couldn't mark the block as permanently
+    // failed).
+    if (GetBlockWeight(block, consensusParams) > MAX_BLOCK_WEIGHT) {
+        return state.DoS(100, false, REJECT_INVALID, "bad-blk-weight", false, strprintf("%s : weight limit failed", __func__));
+    }
+*/
     return true;
 }
 
@@ -4420,6 +4511,7 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
     if (!IsInitialBlockDownload() && chainActive.Tip() == pindex->pprev)
         GetMainSignals().NewPoWValidBlock(pindex, pblock);
 
+//???    int nHeight = pindex->nHeight;
     // Write block to history file
     try {
         unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);
@@ -4511,6 +4603,7 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
         return error("%s: Consensus::CheckBlock: %s", __func__, FormatStateMessage(state));
     if (!ContextualCheckBlock(block, state, chainparams.GetConsensus(), pindexPrev))
         return error("%s: Consensus::ContextualCheckBlock: %s", __func__, FormatStateMessage(state));
+    //??? if (!ConnectBlock(block, state, &indexDummy, viewNew, chainparams, true))
 
     dev::h256 oldHashStateRoot(globalState->rootHash()); // fabcoin
     dev::h256 oldHashUTXORoot(globalState->rootHashUTXO()); // fabcoin
@@ -5347,7 +5440,7 @@ bool LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, CDiskB
                     LogPrint(BCLog::REINDEX, "Block Import: already had block %s at height %d\n", hash.ToString(), mapBlockIndex[hash]->nHeight);
                 }
 
-                // In Fabcoin this only needed to be done for genesis and at the end of block indexing
+                // In Bitcoin this only needed to be done for genesis and at the end of block indexing
                 // But for Fabcoin PoS we need to sync this after every block to ensure txdb is populated for
                 // validating PoS proofs
                 {

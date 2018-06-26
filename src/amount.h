@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-/** Amount in satoshis (Can be negative) */
+/** Amount in liu (Can be negative) */
 typedef int64_t CAmount;
 
 static const CAmount COIN = 100000000;
@@ -17,6 +17,16 @@ static const CAmount CENT = 1000000;
 /** No amount larger than this (in satoshi) is valid.*/
 static const CAmount MAX_MONEY = 107822406 * COIN + 25 * CENT;
 
+/** No amount larger than this (in liu) is valid.
+ *
+ * Note that this constant is *not* the total money supply, which in Fabcoin
+ * currently happens to be less than 168,000,000 FAB for various reasons, but
+ * rather a sanity check. As this sanity check is used by consensus-critical
+ * validation code, the exact value of the MAX_MONEY constant is consensus
+ * critical; in unusual circumstances like a(nother) overflow bug that allowed
+ * for the creation of coins out of thin air modification could lead to a fork.
+ * */
+//???!!!  static const CAmount MAX_MONEY = (168000000 + 32000000) * COIN;
 inline bool MoneyRange(const CAmount& nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 
 #endif //  FABCOIN_AMOUNT_H

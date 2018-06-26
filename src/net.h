@@ -52,7 +52,9 @@ static const unsigned int MAX_INV_SZ = 50000;
 /** The maximum number of new addresses to accumulate before announcing. */
 static const unsigned int MAX_ADDR_TO_SEND = 1000;
 /** Maximum length of incoming protocol messages (no message over 20 MB is currently acceptable). */
+//????????  /** Maximum length of incoming protocol messages (no message over 4 MB is currently acceptable). */
 extern unsigned int dgpMaxProtoMsgLength;
+//????????   static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 4 * 1000 * 1000;
 /** Maximum length of strSubVer in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
 /** Maximum number of automatic outgoing nodes */
@@ -850,6 +852,7 @@ public:
     std::string GetAddrName() const;
     //! Sets the addrName only if it was not previously set
     void MaybeSetAddrName(const std::string& addrNameIn);
+//????    bool IsLegacyBlockHeader(int version) { return version < FAB_HARD_FORK_VERSION; };
 };
 
 

@@ -259,6 +259,7 @@ const CLogCategoryDesc LogCategories[] =
     {BCLog::QT, "qt"},
     {BCLog::LEVELDB, "leveldb"},
     {BCLog::COINSTAKE, "coinstake"},
+    {BCLog::POW, "pow"},
     {BCLog::HTTPPOLL, "http-poll"},
     {BCLog::ALL, "1"},
     {BCLog::ALL, "all"},
@@ -899,6 +900,20 @@ bool SetupNetworking()
 #endif
     return true;
 }
+
+void SetThreadPriority(int nPriority)
+{
+#ifdef WIN32
+    SetThreadPriority(GetCurrentThread(), nPriority);
+#else // WIN32
+#ifdef PRIO_THREAD
+    setpriority(PRIO_THREAD, 0, nPriority);
+#else // PRIO_THREAD
+    setpriority(PRIO_PROCESS, 0, nPriority);
+#endif // PRIO_THREAD
+#endif // WIN32
+}
+
 
 int GetNumCores()
 {

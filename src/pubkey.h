@@ -98,7 +98,7 @@ public:
     const unsigned char* begin() const { return vch; }
     const unsigned char* end() const { return vch + size(); }
     const unsigned char& operator[](unsigned int pos) const { return vch[pos]; }
-    std::vector<unsigned char> getvch() const
+    std::vector<unsigned char> getvch() const       //q
     {
         return std::vector<unsigned char>(begin(), end());
     }

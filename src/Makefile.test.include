@@ -82,6 +82,7 @@ FABCOIN_TESTS =\
   test/versionbits_tests.cpp \
   test/uint256_tests.cpp \
   test/univalue_tests.cpp \
+  test/equihash_tests.cpp \
   test/util_tests.cpp \
   test/fabcointests/fabcointxconverter_tests.cpp \
   test/fabcointests/bytecodeexec_tests.cpp \
@@ -131,7 +132,8 @@ test_test_fabcoin_fuzzy_LDADD = \
   $(LIBFABCOIN_UTIL) \
   $(LIBFABCOIN_CONSENSUS) \
   $(LIBFABCOIN_CRYPTO) \
-  $(LIBSECP256K1)
+  $(LIBSECP256K1) \
+  $(LIBEQUIHASH_LIBS)
 
 test_test_fabcoin_fuzzy_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
