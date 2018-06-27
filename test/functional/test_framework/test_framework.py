@@ -335,6 +335,7 @@ class FabcoinTestFramework(object):
         versions of the cache, this helper function sets mocktime to Jan 1,
         2014 + (201 * 10 * 60)"""
         self.mocktime = 1504695029 + (601 * 2 * 64) # int(time.time()) - 100*24*60*60 + (201 * 10 * 60)
+        #???         self.mocktime = 1388534400 + (201 * 10 * 60)
 
     def disable_mocktime(self):
         self.mocktime = 0
@@ -369,10 +370,11 @@ class FabcoinTestFramework(object):
             rpc_handler.setLevel(logging.DEBUG)
             rpc_logger.addHandler(rpc_handler)
 
+    #???    def _initialize_chain(self, blocknum=900):
     def _initialize_chain(self):
         """Initialize a pre-mined blockchain for use by the test.
 
-        Create a cache of a 200-block-long chain (with wallet) for MAX_NODES
+        Create a cache of a 900-block-long chain (with wallet) for MAX_NODES
         Afterward, create num_nodes copies from the cache."""
 
         assert self.num_nodes <= MAX_NODES
@@ -404,13 +406,15 @@ class FabcoinTestFramework(object):
             for node in self.nodes:
                 node.wait_for_rpc_connection()
 
-            # Create a 200-block-long chain; each of the 4 first nodes
+            # Create a 100 + COINBASE_MATURITY -block-long chain; each of the 4 first nodes
             # gets 25 mature blocks and 25 immature.
             # Note: To preserve compatibility with older versions of
             # initialize_chain, only 4 nodes will generate coins.
             #
             # blocks are created with timestamps 10 minutes apart
             # starting from 2010 minutes in the past
+            #??? blocks are created with timestamps 75 seconds apart
+            #??? starting from (101 + COINBASE_MATURITY) *75 seconds in the past
             self.enable_mocktime()
             block_time = self.mocktime - (601 * 2 * 64)
             for i in range(1):
@@ -419,6 +423,7 @@ class FabcoinTestFramework(object):
                         set_node_times(self.nodes, block_time)
                         self.nodes[peer].generate(1)
                         block_time += 2 * 64
+                        #???  block_time += 75 
                     # Must sync before next peer starts generating blocks
                     sync_blocks(self.nodes)
 
@@ -429,6 +434,7 @@ class FabcoinTestFramework(object):
                 set_node_times(self.nodes, block_time)
                 self.nodes[peer].generate(1)
                 block_time += 2 * 64
+                #??? block_time += 75
             # Must sync before next peer starts generating blocks
             sync_blocks(self.nodes)
 
