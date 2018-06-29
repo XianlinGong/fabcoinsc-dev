@@ -46,7 +46,7 @@ MY_RELAY = 1 # from version 70001 onwards, fRelay should be appended to version 
 MAX_INV_SZ = 50000
 MAX_BLOCK_BASE_SIZE = 1000000
 
-COIN = 100000000 # 1 fab in lius
+COIN = 100000000 # 1 btc in lius
 
 NODE_NETWORK = (1 << 0)
 NODE_GETUTXO = (1 << 1)
@@ -54,8 +54,6 @@ NODE_BLOOM = (1 << 2)
 NODE_WITNESS = (1 << 3)
 NODE_UNSUPPORTED_SERVICE_BIT_5 = (1 << 5)
 NODE_UNSUPPORTED_SERVICE_BIT_7 = (1 << 7)
-
-FAB_REGTEST_HARDFORK_HEIGHT = 24000
 
 logger = logging.getLogger("TestFramework.mininode")
 
@@ -520,7 +518,7 @@ class CTransaction(object):
     def is_valid(self):
         self.calc_sha256()
         for tout in self.vout:
-            if tout.nValue < 0 or tout.nValue > 168000000 * COIN:
+            if tout.nValue < 0 or tout.nValue > 21000000 * COIN:
                 return False
         return True
 
@@ -537,8 +535,6 @@ class CBlockHeader(object):
             self.nVersion = header.nVersion
             self.hashPrevBlock = header.hashPrevBlock
             self.hashMerkleRoot = header.hashMerkleRoot
-            self.nHeight = header.nHeight
-            #??? self.nReserved = copy.copy(header.nReserved)
             self.nTime = header.nTime
             self.nBits = header.nBits
             self.nNonce = header.nNonce
@@ -547,18 +543,14 @@ class CBlockHeader(object):
             self.prevoutStake = header.prevoutStake
             self.vchBlockSig = header.vchBlockSig
 
-            #??? self.nSolution = header.nSolution
             self.sha256 = header.sha256
             self.hash = header.hash
             self.calc_sha256()
 
     def set_null(self):
         self.nVersion = 4
-        #??? self.nVersion = 1
         self.hashPrevBlock = 0
         self.hashMerkleRoot = 0
-        self.nHeight = 0
-        #??? self.nReserved = [0] * 7
         self.nTime = 0
         self.nBits = 0
         self.nNonce = 0
@@ -569,8 +561,6 @@ class CBlockHeader(object):
 
         self.sha256 = None
         self.hash = None
-        #??? self.nSolution = b""
-
 
     def deserialize(self, f):
         self.nVersion = struct.unpack("<i", f.read(4))[0]
@@ -618,69 +608,6 @@ class CBlockHeader(object):
             self.sha256 = uint256_from_str(hash256(r))
             self.hash = encode(hash256(r)[::-1], 'hex_codec').decode('ascii')
 
-
-“”“  ???
-    def deserialize(self, f, legacy=True):
-        if legacy:
-            self.nVersion = struct.unpack("<i", f.read(4))[0]
-            self.hashPrevBlock = deser_uint256(f)
-            self.hashMerkleRoot = deser_uint256(f)
-            self.nTime = struct.unpack("<I", f.read(4))[0]
-            self.nBits = struct.unpack("<I", f.read(4))[0]
-            self.nNonce = struct.unpack("<I", f.read(4))[0]
-            self.nHeight = 0
-            self.nReserved = [0] * 7
-            self.nSolution = b""
-        else:
-            self.nVersion = struct.unpack("<i", f.read(4))[0]
-            self.hashPrevBlock = deser_uint256(f)
-            self.hashMerkleRoot = deser_uint256(f)
-            self.nHeight = struct.unpack("<I", f.read(4))[0]
-            self.nReserved = [struct.unpack("<I", f.read(4))[0] for _ in range(7)]
-            self.nTime = struct.unpack("<I", f.read(4))[0]
-            self.nBits = struct.unpack("<I", f.read(4))[0]
-            self.nNonce = deser_uint256(f)
-            self.nSolution = deser_byte_vector(f)
-        self.sha256 = None
-        self.hash = None
-
-    def serialize_header(self, legacy=True):
-        r = b""
-        if legacy:
-            r += struct.pack("<i", self.nVersion)
-            r += ser_uint256(self.hashPrevBlock)
-            r += ser_uint256(self.hashMerkleRoot)
-            r += struct.pack("<I", self.nTime)
-            r += struct.pack("<I", self.nBits)
-            r += struct.pack("<I", self.nNonce & 0xFFFFFFFF)
-            return r
-        else:
-            r += struct.pack("<i", self.nVersion)
-            r += ser_uint256(self.hashPrevBlock)
-            r += ser_uint256(self.hashMerkleRoot)
-            r += struct.pack("<I", self.nHeight)
-            for i in range(7):
-                r += struct.pack("<I", self.nReserved[i])
-            r += struct.pack("<I", self.nTime)
-            r += struct.pack("<I", self.nBits)
-            r += ser_uint256(self.nNonce)
-            r += ser_byte_vector(self.nSolution)
-            return r
-
-    def serialize(self, legacy=True):
-        return self.serialize_header(legacy=legacy)
-
-    def calc_sha256(self):
-        if self.sha256 is None:
-            if self.nHeight < FAB_REGTEST_HARDFORK_HEIGHT:
-                r = self.serialize_header(legacy=True)
-            else:
-                r = self.serialize_header(legacy=False)
-            self.sha256 = uint256_from_str(hash256(r))
-            self.hash = encode(hash256(r)[::-1], 'hex_codec').decode('ascii')
-???
-"""
-
     def rehash(self):
         self.sha256 = None
         self.calc_sha256()
@@ -704,8 +631,8 @@ class CBlockHeader(object):
         return False
 
     def __repr__(self):
-        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nHeight=%d nTime=%s nBits=%08x nNonce=%08x)" \
-            % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot, self.nHeight,
+        return "CBlockHeader(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%08x)" \
+            % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
                time.ctime(self.nTime), self.nBits, self.nNonce)
 
 
@@ -714,9 +641,6 @@ class CBlock(CBlockHeader):
         super(CBlock, self).__init__(header)
         self.vtx = []
 
-    #def deserialize(self, f, legacy=True):
-    #    super(CBlock, self).deserialize(f, legacy=legacy)
-    #    self.vtx = deser_vector(f, CTransaction)
     def deserialize(self, f):
         super(CBlock, self).deserialize(f)
         self.vtx = deser_vector(f, CTransaction)
@@ -751,7 +675,6 @@ class CBlock(CBlockHeader):
     def calc_witness_merkle_root(self, is_pos=False):
         # For witness root purposes, the hash of the
         # coinbase, with witness, is defined to be 0...0
-        #??? hashes = [ser_uint256(0)]
         if is_pos:
             hashes = [ser_uint256(0), ser_uint256(0)]
             hashes_start_index = 2
@@ -766,7 +689,6 @@ class CBlock(CBlockHeader):
         return self.get_merkle_root(hashes)
 
     def is_valid(self):
-        # TODO(h4x3rotab): Not implemented for Equihash.
         self.calc_sha256()
         target = uint256_from_compact(self.nBits)
         if self.sha256 > target:
@@ -779,7 +701,6 @@ class CBlock(CBlockHeader):
         return True
 
     def solve(self):
-        # TODO(h4x3rotab): Not implemented for Equihash.
         self.rehash()
         target = uint256_from_compact(self.nBits)
         while self.sha256 > target:
@@ -801,8 +722,8 @@ class CBlock(CBlockHeader):
         self.vchBlockSig = key.sign(sha256NoSig, low_s=low_s)
 
     def __repr__(self):
-        return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nHeight=%d nTime=%s nBits=%08x nNonce=%08x vtx=%s)" \
-            % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot, self.nHeight,
+        return "CBlock(nVersion=%i hashPrevBlock=%064x hashMerkleRoot=%064x nTime=%s nBits=%08x nNonce=%08x vtx=%s)" \
+            % (self.nVersion, self.hashPrevBlock, self.hashMerkleRoot,
                time.ctime(self.nTime), self.nBits, self.nNonce, repr(self.vtx))
 
 
@@ -1794,9 +1715,6 @@ class NodeConn(asyncore.dispatcher):
         "mainnet": b"\xf1\xcf\xa6\xd3",   # mainnet
         "testnet3": b"\x0d\x22\x15\x06",  # testnet3
         "regtest": b"\xfd\xdd\xc6\xe1",   # regtest
-        #??? "mainnet": b"\xfa\xbe\xef\xab",   # mainnet
-        #??? "testnet3": b"\x0f\x11\x0a\x0b",  # testnet3
-        #??? "regtest": b"\xfa\xbf\xb5\xda",   # regtest
     }
 
     def __init__(self, dstaddr, dstport, rpc, callback, net="regtest", services=NODE_NETWORK, send_version=True):

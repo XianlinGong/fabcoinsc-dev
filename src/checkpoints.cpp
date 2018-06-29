@@ -12,7 +12,7 @@
 
 #include <stdint.h>
 
-static const int nCheckpointSpan = 500;
+static const int nCheckpointSpan = 800;
 
 namespace Checkpoints {
 
