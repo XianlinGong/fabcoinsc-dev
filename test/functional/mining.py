@@ -16,6 +16,8 @@ from test_framework.blocktools import create_coinbase
 from test_framework.mininode import CBlock
 from test_framework.test_framework import FabcoinTestFramework
 from test_framework.util import assert_equal, assert_raises_rpc_error
+from test_framework.fabcoinconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY
+
 
 def b2x(b):
     return b2a_hex(b).decode('ascii')
@@ -36,12 +38,13 @@ class MiningTest(FabcoinTestFramework):
 
         self.log.info('getmininginfo')
         mining_info = node.getmininginfo()
-        assert_equal(mining_info['blocks'], 600)
+        assert_equal(mining_info['blocks'], COINBASE_MATURITY+100)
         assert_equal(mining_info['chain'], 'regtest')
         assert_equal(mining_info['currentblocktx'], 0)
         assert_equal(mining_info['currentblockweight'], 0)
         assert_equal(mining_info['difficulty']['proof-of-work'], Decimal('4.656542373906925E-10'))
-        assert_equal(mining_info['networkhashps'], Decimal('0.015625'))
+        #assert_equal(mining_info['networkhashps'], Decimal('0.015625'))
+        assert_equal(mining_info['networkhashps'], Decimal('0.02666666666666667'))
         assert_equal(mining_info['pooledtx'], 0)
 
         # Mine a block to leave initial block download

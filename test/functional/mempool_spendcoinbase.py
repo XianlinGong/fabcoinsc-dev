@@ -14,7 +14,7 @@ but less mature coinbase spends are NOT.
 
 from test_framework.test_framework import FabcoinTestFramework
 from test_framework.util import *
-from test_framework.fabcoinconfig import INITIAL_BLOCK_REWARD
+from test_framework.fabcoinconfig import INITIAL_BLOCK_REWARD, COINBASE_MATURITY
 
 # Create one-input, one-output, no-fee transaction:
 class MempoolSpendCoinbaseTest(FabcoinTestFramework):
@@ -24,7 +24,7 @@ class MempoolSpendCoinbaseTest(FabcoinTestFramework):
 
     def run_test(self):
         chain_height = self.nodes[0].getblockcount()
-        assert_equal(chain_height, 600)
+        assert_equal(chain_height, COINBASE_MATURITY+100)
         node0_address = self.nodes[0].getnewaddress()
 
         # Coinbase at height chain_height-100+1 ok in mempool, should

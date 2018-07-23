@@ -61,7 +61,7 @@ class RESTTest (FabcoinTestFramework):
         self.nodes[2].generate(COINBASE_MATURITY)
         self.sync_all()
 
-        assert_equal(self.nodes[0].getbalance(), INITIAL_BLOCK_REWARD)
+        assert_equal(self.nodes[0].getbalance(), INITIAL_BLOCK_REWARD            + 25)  #QTUM
 
         txid = self.nodes[0].sendtoaddress(self.nodes[1].getnewaddress(), 0.1)
         self.sync_all()

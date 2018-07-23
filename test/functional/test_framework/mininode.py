@@ -46,7 +46,7 @@ MY_RELAY = 1 # from version 70001 onwards, fRelay should be appended to version 
 MAX_INV_SZ = 50000
 MAX_BLOCK_BASE_SIZE = 1000000
 
-COIN = 100000000 # 1 btc in lius
+COIN = 100000000 # 1 fab in satoshis
 
 NODE_NETWORK = (1 << 0)
 NODE_GETUTXO = (1 << 1)
@@ -1712,9 +1712,12 @@ class NodeConn(asyncore.dispatcher):
         b"blocktxn": msg_blocktxn
     }
     MAGIC_BYTES = {
-        "mainnet": b"\xf1\xcf\xa6\xd3",   # mainnet
-        "testnet3": b"\x0d\x22\x15\x06",  # testnet3
-        "regtest": b"\xfd\xdd\xc6\xe1",   # regtest
+        #"mainnet": b"\xf1\xcf\xa6\xd3",   # mainnet
+        #"testnet3": b"\x0d\x22\x15\x06",  # testnet3
+        #"regtest": b"\xfd\xdd\xc6\xe1",   # regtest
+        "mainnet": b"\xfa\xbe\xef\xab",   # mainnet
+        "testnet3": b"\x0f\x11\x0a\x0b",  # testnet3
+        "regtest": b"\xfa\xbf\xb5\xda",   # regtest
     }
 
     def __init__(self, dstaddr, dstport, rpc, callback, net="regtest", services=NODE_NETWORK, send_version=True):

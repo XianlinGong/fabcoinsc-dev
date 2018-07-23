@@ -60,11 +60,11 @@ BASE_SCRIPTS= [
     'p2p-fullblocktest.py',
     'fundrawtransaction.py',
     'p2p-compactblocks.py',
-    'segwit.py',
+    ###'segwit.py',
     # vv Tests less than 2m vv
     'wallet.py',
     'wallet-accounts.py',
-    'p2p-segwit.py',
+    ###'p2p-segwit.py',
     'wallet-dump.py',
     'listtransactions.py',
     # vv Tests less than 60s vv
@@ -129,7 +129,7 @@ BASE_SCRIPTS= [
     'fabcoin-8mb-block.py',
     'fabcoin-gas-limit.py',
     'fabcoin-searchlog.py',
-    'fabcoin-pos-segwit.py',
+    ###'fabcoin-pos-segwit.py',
     'fabcoin-state-root.py',
     'fabcoin-evm-globals.py',
     'fabcoin-null-sender.py',
@@ -163,7 +163,7 @@ BASE_SCRIPTS= [
 EXTENDED_SCRIPTS = [
     # These tests are not run by the travis build process.
     # Longest test should go first, to favor running tests in parallel
-    'pruning.py',
+    #####    'pruning.py',
     # vv Tests less than 20m vv
     'smartfees.py',
     # vv Tests less than 5m vv
