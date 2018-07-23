@@ -371,7 +371,8 @@ public:
 
     bool IsProofOfStake() const
     {
-        return !prevoutStake.IsNull();
+        //return !prevoutStake.IsNull();
+        return false;
     }
 
     std::string ToString() const

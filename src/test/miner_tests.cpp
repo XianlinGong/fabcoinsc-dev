@@ -180,6 +180,7 @@ struct {
         {1, 0x021b6158}, {1, 0x021c9ad7}, {1, 0x021f9bbf}, {5, 0x0220bdb1},
         {2, 0x0220c642}, {1, 0x0220f703}, {1, 0x022397a0}, {1, 0x022663a5},
         {2, 0x022681d6}, {2, 0x0227a53a},
+/*????  300 */
 };
 
 CBlockIndex CreateBlockIndex(int nHeight)
@@ -313,7 +314,7 @@ CAmount calculateReward(const CBlock& block){
 // NOTE: These tests rely on CreateNewBlock doing its own self-validation!
 BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
 {
-return 0;
+#if 0
     // Note that by default, these tests run with size accounting enabled.
     const auto chainParams = CreateChainParams(CBaseChainParams::MAIN);
     const CChainParams& chainparams = *chainParams;
@@ -336,18 +337,14 @@ return 0;
     // Therefore, load 100 blocks :)
     int baseheight = 0;
     std::vector<CTransactionRef> txFirst;
-    //??? for (unsigned int i = 0; i < sizeof(blockinfo)/sizeof(*blockinfo); ++i)
-    for (unsigned int i = 0; i < sizeof(blockinfo)/sizeof(*blockinfo) +300 ; ++i)
+    for (unsigned int i = 0; i < sizeof(blockinfo)/sizeof(*blockinfo); ++i)
     {
         CBlock *pblock = &pblocktemplate->block; // pointer for convenience
         pblock->nVersion = 4; //use version 4 as we enable BIP34, BIP65 and BIP66 since genesis
         pblock->nTime = chainActive.Tip()->GetMedianTimePast()+1+i;
         CMutableTransaction txCoinbase(*pblock->vtx[0]);
         txCoinbase.nVersion = 1;
-        if ( i<sizeof(blockinfo)/sizeof(*blockinfo) )
-            txCoinbase.vin[0].scriptSig = CScript() << chainActive.Height()+1 << blockinfo[i].extranonce;
-        else    txCoinbase.vin[0].scriptSig = CScript() << chainActive.Height()+1 << '0';
- 
+        txCoinbase.vin[0].scriptSig = CScript() << chainActive.Height()+1 << blockinfo[i].extranonce;
         txCoinbase.vout.resize(1); // Ignore the (optional) segwit commitment added by CreateNewBlock (as the hardcoded nonces don't account for this)
         txCoinbase.vout[0].scriptPubKey = CScript();
         pblock->vtx[0] = MakeTransactionRef(std::move(txCoinbase));
@@ -358,7 +355,7 @@ return 0;
         pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
         pblock->nNonce = blockinfo[i].nonce;
         std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
-        //BOOST_CHECK(ProcessNewBlock(chainparams, shared_pblock, true, nullptr));
+        BOOST_CHECK(ProcessNewBlock(chainparams, shared_pblock, true, nullptr));
         pblock->hashPrevBlock = pblock->GetHash();
     }
 
@@ -401,7 +398,6 @@ return 0;
         mempool.addUnchecked(hash, entry.Fee(LOWFEE).Time(GetTime()).SpendsCoinbase(spendsCoinbase).SigOpsCost(80).FromTx(tx));
         tx.vin[0].prevout.hash = hash;
     }
-
     BOOST_CHECK(pblocktemplate = AssemblerForTest(chainparams).CreateNewBlock(scriptPubKey));
     mempool.clear();
 
@@ -627,6 +623,7 @@ return 0;
     TestPackageSelection(chainparams, scriptPubKey, txFirst);
 
     fCheckpointsEnabled = true;
+#endif
 }
 
 BOOST_AUTO_TEST_SUITE_END()

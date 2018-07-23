@@ -399,8 +399,8 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(nullBlock, wallet.ScanForWalletTransactions(oldTip));
-        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 40000 * COIN);
-//???        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 50 * COIN);
+        //!!! BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 50 * COIN);
+        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 25 * COIN);
     }
 
     // Prune the older block file.
@@ -413,8 +413,8 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         CWallet wallet;
         AddKey(wallet, coinbaseKey);
         BOOST_CHECK_EQUAL(oldTip, wallet.ScanForWalletTransactions(oldTip));
-        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 20000 * COIN);
-//???        BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 25 * COIN);
+        //!!! BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 25 * COIN);
+        //BOOST_CHECK_EQUAL(wallet.GetImmatureBalance(), 12 * COIN);
     }
 
     // Verify importmulti RPC returns failure for a key whose creation time is
@@ -505,12 +505,10 @@ BOOST_FIXTURE_TEST_CASE(importwallet_rescan, TestChain100Setup)
         ::importwallet(request);
 
         BOOST_CHECK_EQUAL(wallet.mapWallet.size(), 3);
-//???        BOOST_CHECK_EQUAL(coinbaseTxns.size(), 803);
-        BOOST_CHECK_EQUAL(coinbaseTxns.size(), 503);
+        BOOST_CHECK_EQUAL(coinbaseTxns.size(), 803);
         for (size_t i = 0; i < coinbaseTxns.size(); ++i) {
             bool found = wallet.GetWalletTx(coinbaseTxns[i].GetHash());
-//???            bool expected = i >= 800;
-            bool expected = i >= 500;
+            bool expected = i >= 800;
             BOOST_CHECK_EQUAL(found, expected);
         }
     }
@@ -542,8 +540,8 @@ BOOST_FIXTURE_TEST_CASE(coin_mark_dirty_immature_credit, TestChain100Setup)
     // credit amount is calculated.
     wtx.MarkDirty();
     wallet.AddKeyPubKey(coinbaseKey, coinbaseKey.GetPubKey());
-//???    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 25*COIN);
-    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 20000*COIN);
+    //??? BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 25*COIN);
+    BOOST_CHECK_EQUAL(wtx.GetImmatureCredit(), 12.5*COIN);
 }
 
 static int64_t AddTx(CWallet& wallet, uint32_t lockTime, int64_t mockTime, int64_t blockTime)

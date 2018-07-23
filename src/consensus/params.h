@@ -46,8 +46,13 @@ struct Params {
     int BIP65Height;
     /** Block height at which BIP66 becomes active */
     int BIP66Height;
-    /** Block height at which Fabcoin GPU hard fork becomes active */
+
+    /** Block height at which Fabcoin Equihash hard fork becomes active */
     int FABHeight;
+
+    /** Block height at which Fabcoin SmartContract hard fork becomes active */
+    int ContractHeight;
+
     /** Block height before which the coinbase subsidy will be locked for the same period */
     int CoinbaseLock;
     /** whether segwit is active */
@@ -84,9 +89,9 @@ struct Params {
     int64_t nPowAveragingWindow;
     int64_t nPowMaxAdjustDown;
     int64_t nPowMaxAdjustUp;
-    //??? int64_t AveragingWindowTimespan() const { return nPowAveragingWindow * nPowTargetSpacing; }
-    //??? int64_t MinActualTimespan() const { return (AveragingWindowTimespan() * (100 - nPowMaxAdjustUp  )) / 100; }
-    //??? int64_t MaxActualTimespan() const { return (AveragingWindowTimespan() * (100 + nPowMaxAdjustDown)) / 100; }
+    int64_t AveragingWindowTimespan() const { return nPowAveragingWindow * nPowTargetSpacing; }
+    int64_t MinActualTimespan() const { return (AveragingWindowTimespan() * (100 - nPowMaxAdjustUp  )) / 100; }
+    int64_t MaxActualTimespan() const { return (AveragingWindowTimespan() * (100 + nPowMaxAdjustDown)) / 100; }
 };
 } // namespace Consensus
 

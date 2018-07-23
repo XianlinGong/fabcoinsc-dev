@@ -10,7 +10,7 @@
 #include "tinyformat.h"
 #include "util.h"
 #include "utilstrencodings.h"
-/*???
+
 // For equihash_parameters_acceptable.
 #include "crypto/equihash.h"
 #include "net.h"
@@ -20,7 +20,6 @@
     ((CBlockHeader::HEADER_SIZE + equihash_solution_size(N, K))*MAX_HEADERS_RESULTS < \
     MAX_PROTOCOL_MESSAGE_LENGTH-1000)
 
-*/
 #include <assert.h>
 
 #include "chainparamsseeds.h"
@@ -32,14 +31,13 @@
 /////////////////////////////////////////////
 
 static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
-//static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, const uint256& nNonce, const std::vector<unsigned char>& nSolution, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     CMutableTransaction txNew;
     txNew.nVersion = 1;
     txNew.vin.resize(1);
     txNew.vout.resize(1);
     txNew.vin[0].scriptSig = CScript() << 00 << 488804799 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
-//???    txNew.vin[0].scriptSig = CScript() << 00 << 520617983 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    //???    txNew.vin[0].scriptSig = CScript() << 00 << 520617983 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
     txNew.vout[0].nValue = genesisReward;
     txNew.vout[0].scriptPubKey = genesisOutputScript;
 
@@ -47,12 +45,10 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     genesis.nTime    = nTime;
     genesis.nBits    = nBits;
     genesis.nNonce   = nNonce;
-//???    genesis.nSolution = nSolution;
     genesis.nVersion = nVersion;
     genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
 
     genesis.hashPrevBlock.SetNull();
-//???    genesis.nHeight  = 0;
     genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
     genesis.hashStateRoot = uint256(h256Touint(dev::h256("e965ffd002cd6ad0e2dc402b8044de833e06b23127ea8c3d80aec91410771495"))); // fabcoin
     genesis.hashUTXORoot = uint256(h256Touint(dev::sha3(dev::rlp("")))); // fabcoin
@@ -77,11 +73,41 @@ static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
-/*??? static CBlock CreateGenesisBlock(uint32_t nTime, const uint256& nNonce, const std::vector<unsigned char>& nSolution, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+/////////////////////////////////////////////
+
+
+static CBlock CreateGenesisBlock_Fabcoin(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, const uint256& nNonce, const std::vector<unsigned char>& nSolution, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
+{
+    CMutableTransaction txNew;
+    txNew.nVersion = 1;
+    txNew.vin.resize(1);
+    txNew.vout.resize(1);
+    txNew.vin[0].scriptSig = CScript() << 00 << 520617983 << CScriptNum(4) << std::vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
+    txNew.vout[0].nValue = genesisReward;
+    txNew.vout[0].scriptPubKey = genesisOutputScript;
+
+    CBlock genesis;  
+    genesis.nTime    = nTime;
+    genesis.nBits    = nBits;
+    genesis._nNonce   = nNonce;
+    genesis.nSolution = nSolution;
+    genesis.nVersion = nVersion;
+    genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
+
+    genesis.hashPrevBlock.SetNull();
+    genesis.nHeight  = 0;
+    genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
+
+
+    return genesis;
+}
+
+
+static CBlock CreateGenesisBlock_Fabcoin(uint32_t nTime, const uint256& nNonce, const std::vector<unsigned char>& nSolution, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
     const char* pszTimestamp = "Facebook data scandal opens new era in global privacy enforcement";
     const CScript genesisOutputScript = CScript() << ParseHex("0322fdc78866c654c11da2fac29f47b2936f2c75a569155017893607b9386a4861") << OP_CHECKSIG;
-    return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nSolution, nBits, nVersion, genesisReward);
+    return CreateGenesisBlock_Fabcoin(pszTimestamp, genesisOutputScript, nTime, nNonce, nSolution, nBits, nVersion, genesisReward);
 }
 
 
@@ -89,7 +115,7 @@ static CBlock CreateGenesisBlockTestnet(uint32_t nTime, const uint256& nNonce, c
 {
     const char* pszTimestamp = "Trump fires Rex Tillerson, selects Mike Pompeo as new Secretary of State";
     const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
-    return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nSolution, nBits, nVersion, genesisReward);
+    return CreateGenesisBlock_Fabcoin(pszTimestamp, genesisOutputScript, nTime, nNonce, nSolution, nBits, nVersion, genesisReward);
 }
 
 static CBlock CreateGenesisBlock_legacy(const char* pszTimestamp, const CScript& genesisOutputScript, uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
@@ -106,7 +132,7 @@ static CBlock CreateGenesisBlock_legacy(const char* pszTimestamp, const CScript&
     CBlock genesis;
     genesis.nTime    = nTime;
     genesis.nBits    = nBits;
-    genesis.nNonce   = ArithToUint256(arith_uint256(nNonce));
+    genesis._nNonce   = ArithToUint256(arith_uint256(nNonce));
     genesis.nVersion = nVersion;
     genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
     genesis.hashPrevBlock.SetNull();
@@ -121,8 +147,6 @@ static CBlock CreateGenesisBlock_legacy(uint32_t nTime, uint32_t nNonce, uint32_
     const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
     return CreateGenesisBlock_legacy(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
-
-*/
 
 
 void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
@@ -146,37 +170,23 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nSubsidyHalvingInterval = 985500; // fabcoin halving every 4 years
+        consensus.nSubsidyHalvingInterval = 3360000; // fabcoin halving every 8 years
+        consensus.FABHeight = 0;
         consensus.BIP34Height = 0;
         consensus.BIP34Hash = uint256S("0x000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c");
         consensus.BIP65Height = 0; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
         consensus.BIP66Height = 0; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
-        consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
-        consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = true;
-        consensus.fPoSNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
-
-/*???
-        consensus.nSubsidyHalvingInterval = 3360000;
-        consensus.FABHeight = 0;
-        consensus.BIP34Height = 0;
-        consensus.BIP34Hash = uint256S("0x0001cfb309df094182806bf71c66fd4d2d986ff2a309d211db602fc9a7db1835");
-        consensus.BIP65Height = 0; 
-        consensus.BIP66Height = 0; 
         consensus.CoinbaseLock = 80000;
-        consensus.ForceSegwit = true;
 
-        consensus.powLimit = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        //??? consensus.ForceSegwit = true;
+        consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        //??? consensus.powLimit = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
+        consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
         consensus.powLimitLegacy = uint256S("0003ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
         consensus.nPowAveragingWindow = 17;
-        assert(maxUint/UintToArith256(consensus.powLimit) >= consensus.nPowAveragingWindow);
-
         consensus.nPowMaxAdjustDown = 32;
         consensus.nPowMaxAdjustUp = 16;
 
@@ -184,11 +194,14 @@ public:
         consensus.nPowTargetSpacing = 1.25 * 60; // 75 seconds
 
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = false;
-
+        consensus.fPowNoRetargeting = true;
+        //???consensus.fPowNoRetargeting = false;
+        consensus.fPoSNoRetargeting = false;
+        //!!! consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
+        //!!! consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
         consensus.nMinerConfirmationWindow = consensus.nPowTargetTimespan / consensus.nPowTargetSpacing; // 2016
         consensus.nRuleChangeActivationThreshold = consensus.nMinerConfirmationWindow * 0.95 + 1; // 95% of 2016
-*/
+
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -216,15 +229,15 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xf1;
-        pchMessageStart[1] = 0xcf;
-        pchMessageStart[2] = 0xa6;
-        pchMessageStart[3] = 0xd3;
-/*???        pchMessageStart[0] = 0xfa;
+        //!!! pchMessageStart[0] = 0xf1;
+        //!!! pchMessageStart[1] = 0xcf;
+        //!!! pchMessageStart[2] = 0xa6;
+        //!!! pchMessageStart[3] = 0xd3;
+        pchMessageStart[0] = 0xfa;
         pchMessageStart[1] = 0xbe;
         pchMessageStart[2] = 0xbf;
         pchMessageStart[3] = 0xab;
-*/
+
         nDefaultPort = 8665;
         nPruneAfterHeight = 100000;
 
@@ -288,11 +301,10 @@ public:
             0,
             0
         };
-        consensus.nLastPOWBlock = 5000;
+        consensus.nLastPOWBlock = 0x7fffffff;
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
-                                    COINBASE_MATURITY;
+        consensus.nFirstMPoSBlock = 0x7fffffff;
+        //??? consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + consensus.nMPoSRewardRecipients + COINBASE_MATURITY;
 
         consensus.nFixUTXOCacheHFHeight=100000;
     }
@@ -305,26 +317,29 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nSubsidyHalvingInterval = 985500; // fabcoin halving every 4 years
+        consensus.nSubsidyHalvingInterval = 3360000; // fabcoin halving every 4 years
+        consensus.FABHeight = 0;
         consensus.BIP34Height = 0;
         consensus.BIP34Hash = uint256S("0x0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222");
         consensus.BIP65Height = 0; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
         consensus.BIP66Height = 0; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
+        consensus.CoinbaseLock = 0;
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
+        //??? consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+        //??? consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetTimespan = 1.75 * 24 * 60 * 60; // 1.75 days, for SHA256 mining only
+        consensus.nPowTargetSpacing = 1.25 * 60; // 75 seconds
+
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = false;
 /*
         consensus.nSubsidyHalvingInterval = 3360000;
-        consensus.FABHeight = 0;
         consensus.BIP34Height = 0;
         consensus.BIP34Hash = uint256S("0x0001cfb309df094182806bf71c66fd4d2d986ff2a309d211db602fc9a7db1835");
         consensus.BIP65Height = 0; 
         consensus.BIP66Height = 0; 
-        consensus.CoinbaseLock = 0;
         consensus.ForceSegwit = false;
 
         consensus.powLimit = uint256S("07ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
@@ -364,14 +379,14 @@ public:
         consensus.defaultAssumeValid = uint256S("0x39ffa0c5924550db0e75030ff8513c3145d491dff2e17b8e3ea1cea7b4662ff0"); //1079274
 //???        consensus.defaultAssumeValid = uint256S("0x0500238931fa06c38381611e9244d9523926d6dc501664de27d1bff4e22b9afa"); 
 
-        pchMessageStart[0] = 0x0d;
-        pchMessageStart[1] = 0x22;
-        pchMessageStart[2] = 0x15;
-        pchMessageStart[3] = 0x06;
-//        pchMessageStart[0] = 0x0f;
-//        pchMessageStart[1] = 0x11;
-//        pchMessageStart[2] = 0x0a;
-//        pchMessageStart[3] = 0x0b;
+        //!!! pchMessageStart[0] = 0x0d;
+        //!!! pchMessageStart[1] = 0x22;
+        //!!! pchMessageStart[2] = 0x15;
+        //!!! pchMessageStart[3] = 0x06;
+        pchMessageStart[0] = 0x0f;
+        pchMessageStart[1] = 0x11;
+        pchMessageStart[2] = 0x0a;
+        pchMessageStart[3] = 0x0b;
         nDefaultPort = 18665;
         nPruneAfterHeight = 1000;
 
@@ -428,11 +443,13 @@ public:
             0
         };
 
-        consensus.nLastPOWBlock = 5000;
+        //!!!consensus.nLastPOWBlock = 5000;
+        //consensus.nMPoSRewardRecipients = 10;
+        //consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + consensus.nMPoSRewardRecipients + COINBASE_MATURITY;
+
+        consensus.nLastPOWBlock = 0x7fffffff;
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
-                                    COINBASE_MATURITY;
+        consensus.nFirstMPoSBlock = 0x7fffffff;
 
         consensus.nFixUTXOCacheHFHeight=84500;
     }
@@ -445,20 +462,24 @@ class CRegTestParams : public CChainParams {
 public:
     CRegTestParams() {
         strNetworkID = "regtest";
-        consensus.nSubsidyHalvingInterval = 150;
+        consensus.FABHeight = 24000;
+        consensus.nSubsidyHalvingInterval = 850;
         consensus.BIP34Height = 0; // BIP34 has not activated on regtest (far in the future so block v1 are not rejected in tests) // activate for fabcoin
         consensus.BIP34Hash = uint256S("0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943");
         consensus.BIP65Height = 0; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 0; // BIP66 activated on regtest (Used in rpc activation tests)
+        consensus.CoinbaseLock = 0;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
+        //!!! consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+        //!!! consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetTimespan = 1.75 * 24 * 60 * 60; // 1.75 days
+        consensus.nPowTargetSpacing = 1.25 * 60; // 75 seconds
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = true;
-        consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
-        consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
+        consensus.nRuleChangeActivationThreshold = 633; // 75% for testchains
+        consensus.nMinerConfirmationWindow = 844; // Faster than normal for regtest (144 instead of 2016)
 
 /* ???
         consensus.nSubsidyHalvingInterval = 850;
@@ -467,7 +488,6 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 1351; // BIP65 activated on regtest (Used in rpc activation tests)
         consensus.BIP66Height = 1251; // BIP66 activated on regtest (Used in rpc activation tests)
-        consensus.FABHeight = 24000;
         consensus.CoinbaseLock = 0;
         consensus.ForceSegwit = false;
 
@@ -501,14 +521,14 @@ public:
 
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00");
-//        pchMessageStart[0] = 0xfa;
-//        pchMessageStart[1] = 0xbf;
-//        pchMessageStart[2] = 0xb5;
-//        pchMessageStart[3] = 0xda;
-        pchMessageStart[0] = 0xfd;
-        pchMessageStart[1] = 0xdd;
-        pchMessageStart[2] = 0xc6;
-        pchMessageStart[3] = 0xe1;
+        pchMessageStart[0] = 0xfa;
+        pchMessageStart[1] = 0xbf;
+        pchMessageStart[2] = 0xb5;
+        pchMessageStart[3] = 0xda;
+        //!!! pchMessageStart[0] = 0xfd;
+        //!!! pchMessageStart[1] = 0xdd;
+        //!!! pchMessageStart[2] = 0xc6;
+        //!!! pchMessageStart[3] = 0xe1;
         nDefaultPort = 28665;
         nPruneAfterHeight = 1000;
 
@@ -554,7 +574,8 @@ public:
         };
         consensus.nLastPOWBlock = 0x7fffffff;
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = 5000;
+        //???consensus.nFirstMPoSBlock = 5000;
+        consensus.nFirstMPoSBlock = 0x7fffffff;
 
         consensus.nFixUTXOCacheHFHeight=0;
 

@@ -1,7 +1,5 @@
 #include "wallettests.h"
 
-#include "consensus/consensus.h"
-
 #include "qt/fabcoinamountfield.h"
 #include "qt/callback.h"
 #include "qt/optionsmodel.h"
@@ -144,7 +142,9 @@ void BumpFee(TransactionView& view, const uint256& txid, bool expectDisabled, st
 //     src/qt/test/test_fabcoin-qt -platform cocoa    # macOS
 void TestSendCoins()
 {
-    //Set up wallet and chain with 805 blocks (5 mature blocks for spending).
+    //??? Set up wallet and chain with 805 blocks (5 mature blocks for spending).
+    ///??? TestChain800Setup test;
+    // Set up wallet and chain with 105 blocks (5 mature blocks for spending).
     TestChain100Setup test;
     for (int i = 0; i < 5; ++i) {
         test.CreateAndProcessBlock({}, GetScriptForRawPubKey(test.coinbaseKey.GetPubKey()));
@@ -173,10 +173,12 @@ void TestSendCoins()
 
     // Send two transactions, and verify they are added to transaction list.
     TransactionTableModel* transactionTableModel = walletModel.getTransactionTableModel();
-    QCOMPARE(transactionTableModel->rowCount({}), COINBASE_MATURITY + 5);
+    QCOMPARE(transactionTableModel->rowCount({}), 805);
+    //??? QCOMPARE(transactionTableModel->rowCount({}), 805);
     uint256 txid1 = SendCoins(wallet, sendCoinsDialog, CFabcoinAddress(CKeyID()), 5 * COIN, false /* rbf */);
     uint256 txid2 = SendCoins(wallet, sendCoinsDialog, CFabcoinAddress(CKeyID()), 10 * COIN, true /* rbf */);
-    QCOMPARE(transactionTableModel->rowCount({}), COINBASE_MATURITY + 7);
+    QCOMPARE(transactionTableModel->rowCount({}), 807);
+    //??? QCOMPARE(transactionTableModel->rowCount({}), 807);
     QVERIFY(FindTx(*transactionTableModel, txid1).isValid());
     QVERIFY(FindTx(*transactionTableModel, txid2).isValid());
 

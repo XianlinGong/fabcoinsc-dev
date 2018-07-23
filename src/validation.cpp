@@ -114,8 +114,7 @@ static bool UpdateHashProof(const CBlock& block, CValidationState& state, const 
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Qtum Signed Message:\n";
-//??????????????????  const std::string strMessageMagic = "Bitcoin Signed Message:\n";
+const std::string strMessageMagic = "Bitcoin Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -1287,22 +1286,6 @@ bool ReadFromDisk(CMutableTransaction& tx, CDiskTxPos& txindex, CBlockTreeDB& tx
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-    if(nHeight <= consensusParams.nLastPOWBlock)
-        return 20000 * COIN;
-
-    int halvings = (nHeight - consensusParams.nLastPOWBlock - 1) / consensusParams.nSubsidyHalvingInterval;
-    // Force block reward to zero when right shift is undefined.
-    if (halvings >= 7)
-        return 0;
-
-    CAmount nSubsidy = 4 * COIN;
-    // Subsidy is cut in half every 985500 blocks which will occur approximately every 4 years.
-    nSubsidy >>= halvings;
-    return nSubsidy;
-}
-/*????
-CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
-{
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
     // Force block reward to zero when right shift is undefined.
     if (halvings >= 64)
@@ -1313,15 +1296,18 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     //Pre-mining 
     bool fRegTest = gArgs.GetBoolArg("-regtest", false);
 
+    // for qtum genesis for now  
+    if ( nHeight == 1  ) 
+       nSubsidy = 50 * COIN;  
+
     if ( nHeight == 2  &&  !fRegTest ) {
        nSubsidy = 32000000 * COIN;
     }
 
-    // Subsidy is cut in half every 1680,000 blocks which will occur approximately every 4 years.
+    // Subsidy is cut in half every 3360,000 blocks which will occur approximately every 8 years.
     nSubsidy >>= halvings;
     return nSubsidy;
 }
-*/
 
 bool IsInitialBlockDownload()
 {
@@ -2392,7 +2378,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-length", false, "size limits failed");
 
     // Move this check from ContextualCheckBlock to ConnectBlock as it depends on DGP values
-    if (GetBlockWeight(block) > dgpMaxBlockWeight) {
+    if (GetBlockWeight(block, chainparams.GetConsensus()) > dgpMaxBlockWeight) {
         return state.DoS(100, false, REJECT_INVALID, "bad-blk-weight", false, strprintf("%s : weight limit failed", __func__));
     }
 
@@ -4275,7 +4261,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
         }
     }
 
-/*???
+/*!!!
     // After the coinbase witness nonce and commitment are verified,
     // we can check if the block weight passes (before we've checked the
     // coinbase witness, it would be possible for the weight to be too
@@ -4564,6 +4550,11 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
         // Ensure that CheckBlock() passes before calling AcceptBlock, as
         // belt-and-suspenders.
         bool ret = CheckBlock(*pblock, state, chainparams.GetConsensus());
+
+        if (!ret) {
+            GetMainSignals().BlockChecked(*pblock, state);
+            return error("%s: CheckBlock FAILED", __func__);
+        }
 
         LOCK(cs_main);
 

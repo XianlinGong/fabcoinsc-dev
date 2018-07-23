@@ -239,25 +239,6 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     originalRewardTx = coinbaseTx;   // q
     pblock->vtx[0] = MakeTransactionRef(std::move(coinbaseTx));
 
-/*  ????
-    pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
-    pblocktemplate->vTxFees[0] = -nFees;
-
-    const Consensus::Params& params = chainparams.GetConsensus();
-    int ser_flags = (nHeight < params.FABHeight) ? SERIALIZE_BLOCK_LEGACY : 0;
-    uint64_t nSerializeSize = GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
-    LogPrintf("CreateNewBlock(): nHeight=%d total size: %u block weight: %u txs: %u fees: %ld sigops %d\n", 
-           nHeight, nSerializeSize, GetBlockWeight(*pblock, chainparams.GetConsensus()), nBlockTx, nFees, nBlockSigOpsCost);
-
-    arith_uint256 nonce;
-    if (nHeight >= params.FABHeight) {
-        // Randomise nonce for new block foramt.
-        nonce = UintToArith256(GetRandHash());
-        // Clear the top and bottom 16 bits (for local use as thread flags and counters)
-        nonce >>= 128;
-        nonce <<= 32;
-    }
-*/
     // Create coinstake transaction.
     if(fProofOfStake)
     {
@@ -307,10 +288,18 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     RebuildRefundTransaction();
     ////////////////////////////////////////////////////////
 
+    //!!!? pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus());
+    //!!!? pblocktemplate->vTxFees[0] = -nFees;
+
     pblocktemplate->vchCoinbaseCommitment = GenerateCoinbaseCommitment(*pblock, pindexPrev, chainparams.GetConsensus(), fProofOfStake);
     pblocktemplate->vTxFees[0] = -nFees;
 
-    LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
+    //!!! LogPrintf("CreateNewBlock(): block weight: %u txs: %u fees: %ld sigops %d\n", GetBlockWeight(*pblock), nBlockTx, nFees, nBlockSigOpsCost);
+    const Consensus::Params& params = chainparams.GetConsensus();
+    int ser_flags = (nHeight < params.FABHeight) ? SERIALIZE_BLOCK_LEGACY : 0;
+    uint64_t nSerializeSize = GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION | ser_flags);
+    LogPrintf("CreateNewBlock(): nHeight=%d total size: %u block weight: %u txs: %u fees: %ld sigops %d\n", 
+           nHeight, nSerializeSize, GetBlockWeight(*pblock, chainparams.GetConsensus()), nBlockTx, nFees, nBlockSigOpsCost);
 
     // The total fee is the Fees minus the Refund
     if (pTotalFees)
@@ -318,15 +307,25 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     // Fill in header
     pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
-    pblock->nNonce         = 0;              // q
-/*
+    pblock->nNonce         = 0;              // qtum
+
     pblock->nHeight        = pindexPrev->nHeight + 1;
     memset(pblock->nReserved, 0, sizeof(pblock->nReserved));
     UpdateTime(pblock, chainparams.GetConsensus(), pindexPrev);
     pblock->nBits          = GetNextWorkRequired(pindexPrev, pblock, chainparams.GetConsensus());
-    pblock->nNonce         = ArithToUint256(nonce);
+
+    arith_uint256 nonce;
+    if (nHeight >= params.FABHeight) {
+        // Randomise nonce for new block foramt.
+        nonce = UintToArith256(GetRandHash());
+        // Clear the top and bottom 16 bits (for local use as thread flags and counters)
+        nonce >>= 128;
+        nonce <<= 32;
+    }
+
+    pblock->_nNonce         = ArithToUint256(nonce);
     pblock->nSolution.clear();
-*/
+
     pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(*pblock->vtx[0]);
 
     CValidationState state;
